@@ -1,17 +1,16 @@
 #-*- coding: utf-8 -*- 
-"""
-########  本文件实现基本的统计分析功能，包括：
-# 1.描述统计
-# 2.分类计数
-# 3.分箱/分段计数
+
+########  本文件实现基本的统计操作功能，包括：
+# 1.描述统计describe()
+# 2.分类计数value_counts()
+# 3.分箱/分段计数value_counts(bins)
 # 4.分类汇总
-#   4.1 分组
+#   4.1 分组groupby
 #   4.2 汇总方式：计数、求和、平均值...
+#   4.3 常用聚合函数
 # 5.透视表
 # 6.日期统计
-# 7.正态分布检验
 ######################################################################
-"""
 
 import pandas as pd
 import numpy as np
@@ -29,10 +28,10 @@ df[col] = df[col].astype('datetime64[ns]')
 ################# 描述统计 ################
 
 # describe()返回描述信息，
-#   1)如果字段是数值型，则返回包括count,mean,std,min,25%,50%,75%,max共8个字典值
+#   1)如果字段是数值型，则返回包括count,mean,std,min,25%,50%,75%,max共8个值
 #       其中count是非空值的个数，可以使用len(df) - count来识别有多少个空值
-#   2）如果字段是字符串型，则返回count,unique,top,freq共4个字典值
-#   3）如果字段是日期，则返回count,unique,top,freq,first,last共6个字典值
+#   2）如果字段是字符串型，则返回count,unique,top,freq共4个值
+#   3）如果字段是日期，则返回count,unique,top,freq,first,last共6个值
 
 des = df['年龄'].describe()
 print(des)
@@ -51,38 +50,26 @@ des.loc['skew'] = df[col].skew()    #偏度
 des.loc['kurt'] = df[col].kurt()     #峰度
 print(des)
 
+
 des = df['学历'].describe()
 print(des)
-
 
 des = df['注册日期'].describe()
 print(des)
 
-# 相关函数
-    # 对数值型变量有效
-    # val = df[col].sum()
-    # df[col].mean()，
-    # df[col].count()
-    # df[col].max()
-    # df[col].min()
-    # df[col].std()
-    # df[col].var()
-    # df[col].sem(标准误差)
 
-    # 描述统计
-    #DataFrame.describe(percentiles=None, include=None, exclude=None)
+# 描述统计
+#DataFrame.describe(percentiles=None, include=None, exclude=None)
     #   percentiles : 百分比列表，默认为[.25, .5, .75]
-    #   The percentiles to include in the output. All should fall between 0 and 1. The default is [.25, .5, .75], which returns the 25th, 50th, and 75th percentiles.
     #   include : ‘all’, list-like of dtypes or None (default), optional
-    #   A white list of data types to include in the result. Ignored for Series. Here are the options:
-    #   ‘all’ : All columns of the input will be included in the output.
-    #   A list-like of dtypes : Limits the results to the provided data types. To limit the result to numeric types submit numpy.number. To limit it instead to categorical objects submit the numpy.object data type. Strings can also be used in the style of select_dtypes (e.g. df.describe(include=['O']))
-    #   None (default) : The result will include all numeric columns.
-    #   exclude : list-like of dtypes or None (default), optional,
-    #   A black list of data types to omit from the result. Ignored for Series. Here are the options:
-    #   A list-like of dtypes : Excludes the provided data types from the result. To select numeric types submit numpy.number. To select categorical objects submit the data type numpy.object. Strings can also be used in the style of select_dtypes (e.g. df.describe(include=['O']))
-    #   None (default) : The result will exclude nothing.
+        # 'all'，表示所有的字段
+        # 类型列表,如['int','categorical']，表示对指定数据类型的字段进行统计
+        # None, 表示仅对数值字段进行统计
+        # 注：对Series对象无效
 
+    #   exclude : list-like of dtypes or None (default), optional,
+        # 黑名单，与include取值类似
+        
 ################# 分类计数 (类别变量)################
 
 # 分类计数, 返回计数
@@ -163,6 +150,10 @@ df2 = grouped[avgCol].agg([np.sum, np.mean, np.std])
 # df2 = grouped['年龄'].agg([np.max, np.mean, np.min]) 
 # df2 = grouped.agg({'省份':np.size, '年龄':np.sum})  # 不同的列，进行不同的统计
 # sr = df2.loc[('广东','男')]
+
+
+# 常用聚合函数
+    # sum, mean, count, max, min, std, var, sem(标准误差)
 
 
 ################# 透视表（交叉表） ################

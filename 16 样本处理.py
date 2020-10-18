@@ -1,9 +1,5 @@
 #-*- coding: utf-8 -*- 
 
-import pandas as pd
-import numpy as np
-
-"""
 ########  本文件实现样本处理功能，包括：
 # 1.筛选
 # 2.抽样
@@ -15,12 +11,16 @@ import numpy as np
 #   4.1 欠抽样
 #   4.2 过抽样
 ######################################################################
-"""
+
+import pandas as pd
+import numpy as np
+
 
 #读取数据集
-filename = '../dataset/用户明细.csv'
+filename = '用户明细.csv'
 df = pd.read_csv(filename)
 print(df.columns.tolist())
+
 
 ######################################################################
 ########  筛选，见基础操作

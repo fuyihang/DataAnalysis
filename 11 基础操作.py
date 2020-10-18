@@ -1,197 +1,21 @@
 #-*- coding: utf-8 -*- 
 
-"""
+
 ########  本文件实现数据集的基础操作，包括
-# 一.数据集构造
-    # 1.手工构造
-    # 2.路径表示
-    # 3.读取CSV文件
-    # 4.读取Excel文件
-    # 5.读取数据库（略）
-# 二.数据集的基本操作
-    # 1. 数据集属性
-    # 2. 数据类型
-    # 3. 排序
-    # 4. 数据访问：行、列、块访问、值
-    # 5. 数据新增：行、列, 新增/插入
-    # 6. 数据修改：修改单值、重新编码、替换行列
-    # 7. 数据删除：行、列、空值
-    # 8. 数据操作：移位、转置、筛选、空值检测、非空值检测
-# 三.保存数据集
+# 1. 数据集属性
+# 2. 数据类型
+# 3. 排序
+# 4. 数据访问：行、列、块访问、值
+# 5. 数据新增：行、列, 新增/插入
+# 6. 数据修改：修改单值、重新编码、替换行列
+# 7. 数据删除：行、列、空值
+# 8. 数据操作：移位、转置、筛选、空值检测、非空值检测
 
 ######################################################################
-""" 
+
 
 import numpy as np
 import pandas as pd
-
-######################################################################
-########  一、数据集构造
-######################################################################
-
-# 1、手工创建数据集================
-
-##1.1）创建索引Index
-# 
-idx = pd.Index([1,2,3])
-print(idx)
-
-idx = pd.Index(data=list('abc'), name='人员')
-print(idx)
-
-dates = ['2020-01-01', '2020-02-01']
-idx = pd.DatetimeIndex(
-        data=dates,
-        name='日期')
-print(idx)
-
-# 还有其它索引类对象
-# RangeIndex, CategoricalIndex, IntervalIndex, 
-# MultiIndex,
-# DatetimeIndex, TimedeltaIndex, PeriodIndex, 
-# Int64Index, UInt64Index, Float64Index
-
-##1.2）创建序列Series
-# 
-# 默认位置索引
-sr = pd.Series([1,'John',25,'初中毕业'])
-print(sr.to_list())
-
-# 指定标签索引
-sr = pd.Series([4,7,5,3], index=['a','b','c','d'], 
-            name='工作年限',dtype='int8')
-sr.index.name='人员'
-
-##1.3）创建数据集DataFrame
-idx = pd.date_range('5/1/2018', periods=8)
-df = pd.DataFrame(np.random.randn(8, 3), index=idx,
-                    columns=['A', 'B', 'C'])
-col = 'A'
-cols = ['A', 'C']
-
-
-# 2、文件、目录表示形式================
-
-## 2.1）windows系统的路径表示
-# 绝对路径
-# path = r'C:\Users\OneDrive\Python\数据分析'       #注意前面有r字符
-# path = 'C:\\Users\\OneDrive\\Python\\数据分析'    #或者用双反斜杠
-# path = 'C:/Users/OneDrive/Python/数据分析'        #或者用斜杠即可
-
-# 相对路径
-# path = '.'    #当前路径
-# path = '..'   #上一级路径
-# path = '用户明细.csv'     #当前目录下的文件
-# path = '../dataset/用户明细.csv'      #上一级目录下的dataset子目录下的文件
-
-## 2.2）MACOS/Linux/Unix等操作
-# 绝对路径
-# filename = '/Users/fusx/Documents/OneDrive/Python/dataset/用户明细.csv' 
-# 相对路径，类似windows表示
-
-## 2.3）获取/修改当前工作目录
-
-# 获取当前工作目录
-import os
-path = os.getcwd()
-print(path)
-
-# 更改当前工作目录
-# path = '/Users/fusx/Documents/OneDrive/Python/数据分析'
-# os.chdir(path)
-
-# 3、读取CSV文件================
-
-# 默认以utf-8编码格式
-filename = '用户明细.csv'
-df = pd.read_csv(filename)      #索引为整数索引（0~N） 
-print(df.columns.tolist())      #标题名称
-print(df.head())
-
-sr = df['性别'].value_counts()
-sr.plot(kind='bar', title=sr.name)
-
-# # 也可指定编码格式
-# filename = 'Telephone.csv'
-# df2 = pd.read_csv(filename,encoding='gbk')
-# print(df2.columns.tolist())      #标题名称
-
-# 其它常用参数
-# skiprows，跳过指定的行数不要读
-# nrows，读取指定的行数
-# index_col，指定该列当成标签索引列
-    # 也可以在读取完成后重新设置索引列
-    # df = pd.read_csv(filename)
-    # df.set_index('用户ID', inplace=True)
-    # print(df.head())
-
-# 4、读取Excel文件================
-
-filename = '某公司销售数据.xlsx'
-sheetname = '全国订单明细'        #默认为第1个sheet
-df3 = pd.read_excel(filename, sheet_name=sheetname)
-
-# # 一次读取多个sheet
-# with pd.ExcelFile(filename) as xls:
-#     dfUsers = pd.read_excel(xls, '用户明细', index_col='用户ID')
-#     dfOrders = pd.read_excel(xls, '订购明细')
-
-# 5、从数据库读取（略）================
-
-
-
-# 相关函数
-    # 读CSV文件
-    # pandas.read_csv(filepath_or_buffer, sep=sep, delimiter=None, header='infer', 
-    #           names=None, index_col=None, usecols=None, squeeze=False, 
-    #           prefix=None, mangle_dupe_cols=True, dtype=None, engine=None, 
-    #           converters=None, true_values=None, false_values=None, 
-    #           skipinitialspace=False, skiprows=None, skipfooter=0, nrows=None, 
-    #           na_values=None, keep_default_na=True, na_filter=True, verbose=False, 
-    #           skip_blank_lines=True, parse_dates=False, infer_datetime_format=False, 
-    #           keep_date_col=False, date_parser=None, dayfirst=False, iterator=False, 
-    #           chunksize=None, compression='infer', thousands=None, decimal=b'.', 
-    #           lineterminator=None, quotechar='"', quoting=csv.QUOTE_MINIMAL, 
-    #           doublequote=True, escapechar=None, comment=None, encoding=None, 
-    #           dialect=None, tupleize_cols=None, error_bad_lines=True, 
-    #           warn_bad_lines=True, delim_whitespace=False, 
-    #           low_memory=_c_parser_defaults['low_memory'], memory_map=False, 
-    #           float_precision=None)
-    # 重要说明：
-    #sep 字段分隔符,默认为','。
-    #header 指定列标题位置
-    #   0，默认，表示第一行为标题；
-    #   None，表示没有标题;
-    #   列表，表示自定义标题）
-    #index_col 指定索引列（默认None，为整数索引0~N；其它整数列表或标签列表，表示指定索引列）
-    #encoding 指定编码格式(如'utf-8','gbk')
-
-    # 读Excel文件
-    # pandas.read_excel(io, sheet_name=0, header=0, names=None, index_col=None, 
-    #           parse_cols=None, usecols=None, squeeze=False, dtype=None, 
-    #           engine=None, converters=None, true_values=None, 
-    #           false_values=None, skiprows=None, nrows=None, na_values=None, 
-    #           keep_default_na=True, verbose=False, parse_dates=False, 
-    #           date_parser=None, thousands=None, comment=None, skip_footer=0, 
-    #           skipfooter=0, convert_float=True, mangle_dupe_cols=True, kwds)
-
-    # 时间范围
-    # pandas.date_range(start=None, end=None, periods=None, freq=None, tz=None, 
-    #                   normalize=False, name=None, closed=None, **kwargs)
-    # start : str or datetime-like, optional，起始时间
-    # end : str or datetime-like, optional，终止时间
-    # periods : integer, optional，周期数量
-    # freq : str or DateOffset, default ‘D’，周期偏移
-        # Frequency strings can have multiples, e.g. ‘5H’. See here for a list of frequency aliases.
-    # tz : str or tzinfo, optional 时区名如‘Asia/Hong_Kong’，默认为当地时区timezone-naive
-    # normalize : bool, default False，
-    # Normalize start/end dates to midnight before generating date range.
-    # name : str, default None，Name of the resulting DatetimeIndex.
-    # closed : {None, ‘left’, ‘right’}, optional
-        # Make the interval closed with respect to the given frequency to the ‘left’, ‘right’, or both sides (None, the default).
-    # **kwargs
-        # For compatibility. Has no effect on the result.
-
 
 ######################################################################
 ########  二、数据常规操行
@@ -199,9 +23,7 @@ df3 = pd.read_excel(filename, sheet_name=sheetname)
 
 ################# 数据集基本属性 ################
 
-df = dfUsers
-
-print('数据集的行数、列数：', df.shape)
+print('(行数,列数) = ', df.shape)
 print('数据集的行数：', df.shape[0])
 print('数据集的列数：', df.shape[1])
 
@@ -242,7 +64,8 @@ df2 = df.iloc[:, 0:3]   #连续列
 ################# 数据类型 ################
 # dtype的取值字符串含义
 # 字符串：object
-# 整型：int8, int16, int32, int64(默认-int)，以及uint8, uint16, uint32, uint64
+# 整型：int8, int16, int32, int64(默认-int)，
+    # 以及uint8, uint16, uint32, uint64
 # 浮点数：float16, float32, float/float64(默认), float128
 # 复数：complex64, complex128, complex256
 # 布尔型：bool

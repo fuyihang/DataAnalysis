@@ -1,10 +1,5 @@
 #-*- coding: utf-8 -*- 
 
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
-
-"""
 ########  本文件实现matplotlib可视化功能
 # 1.中文显示问题
 # 2.简单柱状图
@@ -16,8 +11,10 @@ import matplotlib.pyplot as plt
 # 8.复式柱状图、堆积柱状图、百分比堆积柱状图
 # 9.桑基图（Sankey）
 ######################################################################
-"""
 
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
 
 ###########方法一：一次性解决中文显示问题
 # 1、查看字体所在目录
@@ -177,21 +174,22 @@ def plotPie(df, indexCol, valCol, aggfunc=np.sum, title='饼图',dataLabel=True)
 # 重要参数说明
     # explode=[0,0,0.2,0] 表示对应的饼块被拖出
 
-################散点图、气泡图###############################
-# import matplotlib.colors as pltclrs
-# colors = list(pltclrs.TABLEAU_COLORS.keys()) #生成10个颜色列表
+    # import matplotlib.colors as pltclrs
+    # colors = list(pltclrs.TABLEAU_COLORS.keys()) #生成10个颜色列表
 
-# colors = ['b','g','r','c','m','y','k','w']  #手工定义颜色
-# linestype:
-# 颜色控制参数
-# b - blue
-# g - green
-# r - red
-# c - cyan
-# m - magenta
-# y - yellow
-# k - black
-# w - white
+    # colors = ['b','g','r','c','m','y','k','w']  #手工定义颜色
+    # linestype:
+    # 颜色控制参数
+    # b - blue
+    # g - green
+    # r - red
+    # c - cyan
+    # m - magenta
+    # y - yellow
+    # k - black
+    # w - white
+
+################散点图、气泡图###############################
 
 def plotScatter(df, xCol, yCol, colorCol=None, sizeCol=None, title='散点图'):
     """\
