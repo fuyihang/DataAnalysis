@@ -21,6 +21,10 @@ import pandas as pd
 ########  二、数据常规操行
 ######################################################################
 
+filename = '用户明细.csv'
+df = pd.read_csv(filename)
+
+
 ################# 数据集基本属性 ################
 
 print('(行数,列数) = ', df.shape)
@@ -81,7 +85,7 @@ sr = df.dtypes    #返回Series
 sr = df.dtypes.value_counts()
 
 # 2.查看指定字段的数据类型
-type = df.dtypes['年龄']
+tp = df.dtypes['年龄']
 
 # 3.判断字段类型
 if df.dtypes['年龄'] == np.int:

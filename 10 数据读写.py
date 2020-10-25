@@ -1,7 +1,7 @@
 #-*- coding: utf-8 -*- 
 
 ########  本文件实现数据集的读取与保存操作，包括
-# Part 1.手工构造数据集
+# Part 1.手工构造数据(index,Series,DataFrame)
 # Part 2.从CSV文件读取
 # Part 3.从Excel文件读取
 # Part 4.从数据库读取
@@ -78,10 +78,11 @@ print(df)
     # end : str or datetime-like, optional，终止时间
     # periods : integer, optional，周期数量
     # freq : str or DateOffset, default ‘D’，周期偏移
-        # Frequency strings can have multiples, e.g. ‘5H’. See here for a list of frequency aliases.
+        # Frequency strings can have multiples, e.g. ‘5H’. 
+        # See here for a list of frequency aliases.
     # tz : str or tzinfo, optional 时区名如‘Asia/Hong_Kong’，默认为当地时区timezone-naive
     # normalize : bool, default False，
-    # Normalize start/end dates to midnight before generating date range.
+        # Normalize start/end dates to midnight before generating date range.
     # name : str, default None，Name of the resulting DatetimeIndex.
     # closed : {None, ‘left’, ‘right’}, optional
         # Make the interval closed with respect to the given frequency to the ‘left’, ‘right’, or both sides (None, the default).
@@ -97,7 +98,6 @@ print(df)
 filename = '用户明细.csv'
 df = pd.read_csv(filename)      #索引为整数索引（0~N） 
 print(df.columns.tolist())      #标题名称
-print(df.head())
 
 # 也可指定编码格式
 filename = 'Telephone.csv'
@@ -148,10 +148,11 @@ sheet = '全国订单明细'        #默认为第1个sheet
 df3 = pd.read_excel(filename, sheet_name=sheet)
 
 
-# # 一次读取多个sheet
-# with pd.ExcelFile(filename) as xls:
-#     dfUsers = pd.read_excel(xls, '用户明细', index_col='用户ID')
-#     dfOrders = pd.read_excel(xls, '订购明细')
+# 一次读取多个sheet
+filename = '咖啡销售数据集.xlsx'
+with pd.ExcelFile(filename) as xls:
+    dfProduct = pd.read_excel(xls, '产品表')
+    dfCust = pd.read_excel(xls, '顾客信息表')
 
 
 #pandas.read_excel
