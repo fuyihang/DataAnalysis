@@ -18,8 +18,8 @@ import matplotlib.pyplot as plt
 
 ###########方法一：一次性解决中文显示问题
 # 1、查看字体所在目录
-# import matplotlib
-# print(matplotlib.matplotlib_fname())
+import matplotlib
+print(matplotlib.matplotlib_fname())
 # 2、下载simhei.ttf字体，复制到上述目录的fonts/ttf/目录中
 # 
 # 3、修改matplotlibrc文档
@@ -40,13 +40,14 @@ import matplotlib.pyplot as plt
 
 ################简单柱状图###############################
 
-def plotBar(df, indexCol, valCol, aggfunc=np.sum, title='柱状图', dataLabel=True):
+def plotBar(df, index, value, aggfunc=np.sum, 
+            title='柱状图', dataLabel=True):
     """\
     画柱状图
     """
     # 统计
-    groups = df.groupby(indexCol)
-    sr = groups[valCol].agg(aggfunc)
+    groups = df.groupby(index)
+    sr = groups[value].agg(aggfunc)
 
     # 画图
     rects = plt.bar(sr.index, sr.values, 
@@ -55,7 +56,7 @@ def plotBar(df, indexCol, valCol, aggfunc=np.sum, title='柱状图', dataLabel=T
             linewidth=1)
 
     # 添加数据标签
-    if dataLabel==True:
+    if dataLabel:
         for rect in rects:
             x = rect.get_x() + rect.get_width()/2
             y = rect.get_height()*1.01
@@ -64,8 +65,8 @@ def plotBar(df, indexCol, valCol, aggfunc=np.sum, title='柱状图', dataLabel=T
         # plt.axes().get_yaxis().set_visible(False)
         plt.yticks([])  # 隐藏坐标轴刻度值
     
-    plt.ylabel(valCol)
-    plt.xlabel(indexCol)
+    plt.ylabel(value)
+    plt.xlabel(index)
     plt.title(title)
     plt.show()
 
@@ -78,7 +79,7 @@ def plotHist(df, valCol, bins=10, range=None, title='直方图', dataLabel=True)
     """
     vals = plt.hist(df[valCol], bins, range=range, edgecolor='k')
     # 返回三元组列表(高，分割点，矩阵)
-    heights = vals[0]
+    # heights = vals[0]
     bins = vals[1]
     plt.xticks(bins)
 
@@ -134,6 +135,7 @@ def plotBox(df, valCol, indexCol=None, title='箱图', dataLabel=True):
     else:
         plt.grid()
     
+    plt.ylabel(valCol)
     plt.title(title)
     plt.show()
 
@@ -253,7 +255,8 @@ def plotLine(df, dateCol, valCols, datePeriod='M', aggfunc=np.size, title='折�
 
 ################交叉分析的复式柱状图###############################
 
-def plotBar2(df, indexCol, typeCol, valCol, aggfunc=np.sum, 
+def plotBar2(df, index, columns, 
+        values, aggfunc='sum', 
         stacked=False, percentage=False,
         title='柱状图',dataLabel=True):
     """\
@@ -261,9 +264,11 @@ def plotBar2(df, indexCol, typeCol, valCol, aggfunc=np.sum,
     """
 
     # 透视表
-    df2 = pd.pivot_table(df, index=indexCol, 
-                columns=typeCol, values=valCol,
-                aggfunc= aggfunc)
+    df2 = pd.pivot_table(df, 
+            index=index, 
+            columns=columns, 
+            values=values,
+            aggfunc= aggfunc)
 
     df2['Total'] = df2.sum(axis=1)  #行汇总：按列汇总
     
@@ -273,7 +278,7 @@ def plotBar2(df, indexCol, typeCol, valCol, aggfunc=np.sum,
             df2.iloc[:,i] = df2.iloc[:,i ] /df2.iloc[:, -1]
     
     # 若横坐标不是有序字符串变量，则按值排序
-    if not pd.api.types.is_categorical_dtype(df[indexCol]):
+    if not pd.api.types.is_categorical_dtype(df[index]):
         df2.sort_values(by='Total', ascending=False, inplace=True)
     df2.drop('Total', axis=1,inplace=True)
     
@@ -319,8 +324,8 @@ def plotBar2(df, indexCol, typeCol, valCol, aggfunc=np.sum,
         xpos -= width
         plt.xticks(ticks=xpos, labels=df2.index)
 
-    plt.xlabel(indexCol)
-    plt.ylabel(valCol)
+    plt.xlabel(index)
+    plt.ylabel(values)
     plt.title(title)
     plt.legend()
     plt.show()

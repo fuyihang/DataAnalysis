@@ -24,7 +24,6 @@ import pandas as pd
 filename = '用户明细.csv'
 df = pd.read_csv(filename)
 
-
 ################# 数据集基本属性 ################
 
 print('(行数,列数) = ', df.shape)
@@ -118,6 +117,7 @@ df['注册日期'] = df['注册日期'].apply(pd.to_datetime, format='%Y/%m/%d')
 # df[col].round(decimals=2)         #只显示小数点后2位，四舍五入
 # df[col].map(lambda x: ('%.2f')%x) #自定义函数显示格式，但注意返回的类型是字符串哟
 
+# df.select_dtypes(include='object')
 
 # 9.设置所有列的数据类型
 # 不太常用,注意不会修改原数据集。
@@ -127,6 +127,7 @@ df['注册日期'] = df['注册日期'].apply(pd.to_datetime, format='%Y/%m/%d')
     # 选取指定类型的数据集
     # df2 = df.select_dtypes(include=['number', 'object'], exclude=['unsignedinteger'])
 
+    # 修改类型
     # DataFrame.astype(dtype, copy=True, errors='raise', **kwargs)[source]
     # dtype: data type, or {col:dtype,...}
     # copy: bool ,default True,默认返回一个复制列，而不是原始列

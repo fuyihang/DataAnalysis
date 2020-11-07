@@ -138,7 +138,6 @@ print(df2.columns.tolist())      #标题名称
     #index_col 指定索引列（默认None，为整数索引0~N；其它整数列表或标签列表，表示指定索引列）
     #encoding 指定编码格式(如'utf-8','gbk')
 
-
 ######################################################################
 ########  Part 3.从Excel文件读取
 ######################################################################
@@ -147,13 +146,11 @@ filename = '某公司销售数据.xlsx'
 sheet = '全国订单明细'        #默认为第1个sheet
 df3 = pd.read_excel(filename, sheet_name=sheet)
 
-
 # 一次读取多个sheet
 filename = '咖啡销售数据集.xlsx'
 with pd.ExcelFile(filename) as xls:
     dfProduct = pd.read_excel(xls, '产品表')
     dfCust = pd.read_excel(xls, '顾客信息表')
-
 
 #pandas.read_excel
     # (io, sheet_name=0, header=0, names=None, index_col=None, 
@@ -163,7 +160,6 @@ with pd.ExcelFile(filename) as xls:
     #           keep_default_na=True, verbose=False, parse_dates=False, 
     #           date_parser=None, thousands=None, comment=None, skip_footer=0, 
     #           skipfooter=0, convert_float=True, mangle_dupe_cols=True, kwds)
-
 
 ######################################################################
 ########  Part 4.从数据库读取
@@ -212,8 +208,6 @@ df.to_excel(outfile, index=False, encoding='gbk')
     # sheet_name 可以指定保存的sheet名称
     # index 是否要保存索引（需要设置df.index.name-索引标题名称）
     # header 是否要保存标题
-
-
 
 # 文件、目录表示形式================
 

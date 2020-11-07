@@ -28,10 +28,12 @@ cond = df.duplicated(subset=[col], keep='first')
 dpl = df[cond]
 
 # 2)删除重复项
-# 盲删除
-df2 = df.drop_duplicates(subset=[col], keep='first')
 # 删除指定index
 df2 = df.drop(index=dpl.index, axis=0)
+
+# 盲删除
+df2 = df.drop_duplicates(subset=[col], keep='first')
+
 
 # 3)空值特殊处理
 # 注意：两个空值，也会被看成是重复值。上面会把重复的空值也删除掉哟
@@ -169,7 +171,6 @@ df.drop(index = dfErr.index, inplace=True)
 ######################################################################
 import matplotlib.pyplot as plt
 
-
 col = '折扣点'
 plt.boxplot(df[col])
 
@@ -254,7 +255,8 @@ print('存在缺失值的列：',cols)
 
 # 1.查看缺失值列表
 col = '订单数量'
-dfNull = df[ df[col].isnull() ]
+cond = df[col].isnull()
+dfNull = df[ cond ]
 # dfNull = df[ df[col].isna() ]
 print(dfNull)
 

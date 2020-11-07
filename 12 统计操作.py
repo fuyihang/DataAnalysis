@@ -3,7 +3,7 @@
 ########  本文件实现基本的统计操作功能，包括：
 # 1.描述统计describe()
 # 2.分类计数value_counts()
-# 3.分箱/分段计数value_counts(bins)
+# 3.分段计数/分箱value_counts(bins)
 # 4.分类汇总
 #   4.1 分组groupby
 #   4.2 汇总方式：计数、求和、平均值...
@@ -11,10 +11,8 @@
 # 5.透视表
 # 6.日期统计
 ######################################################################
-
 import pandas as pd
 import numpy as np
-
 
 # 1.读取数据集
 filename = '用户明细.csv'
@@ -50,13 +48,11 @@ des.loc['skew'] = df[col].skew()    #偏度
 des.loc['kurt'] = df[col].kurt()     #峰度
 print(des)
 
-
 des = df['学历'].describe()
 print(des)
 
 des = df['注册日期'].describe()
 print(des)
-
 
 # 描述统计
 #DataFrame.describe(percentiles=None, include=None, exclude=None)
@@ -71,7 +67,6 @@ print(des)
         # 黑名单，与include取值类似
         
 ################# 分类计数 (类别变量)################
-
 # 分类计数, 返回计数
 sr = df['性别'].value_counts()
 
@@ -96,10 +91,10 @@ sr = df['学历'].value_counts(normalize=True)
 sr = df['年龄'].value_counts(bins=10, sort=False)
 print(sr)
 sr = df['年龄'].value_counts(bins=10, normalize=True, sort=False)
+print(sr)
 
 # 因为value_counts会默认按值排序，
 # 所以需要指定sort=False参数，保持索引的顺序性
-
 
 ################# 分类汇总 ################
 # 用户明细，是以utf-8编码，以\t分隔
@@ -156,25 +151,6 @@ df2 = grouped[avgCol].agg([np.sum, np.mean, np.std])
     # sum, mean, count, max, min, std, var, sem(标准误差)
 
 
-################# 透视表（交叉表） ################
-
-# 注意：values指定的字段必须是数值型的
-filename = '用户明细.csv'
-df = pd.read_csv(filename)
-
-# 二维交叉表，按居住地+性别-->年龄(和)
-df2 = pd.pivot_table(df, 
-                index=['学历'], 
-                columns=['性别'],
-                values='年龄',
-                aggfunc='sum')
-
-# 横向合计
-df2['sum'] = df2.sum(axis=1)
-# 纵向合计
-df2.loc['sum'] = df2.sum(axis=0)
-
-
 # DataFrame.groupby
     # (by=None, axis=0, level=None, as_index=True, 
     #            sort=True, group_keys=True, squeeze=False, observed=False, **kwargs)
@@ -183,6 +159,24 @@ df2.loc['sum'] = df2.sum(axis=0)
     #   sem(组均方差)，describe(描述统计),nth(第N个值)
     #   size(组大小)，count(各列的组大小)
     #   注意：上述函数排除空值
+
+################# 透视表（交叉表） ################
+# 注意：values指定的字段必须是数值型的
+filename = '用户明细.csv'
+df = pd.read_csv(filename)
+
+# 二维交叉表，按省份+性别-->人数
+dfpivot = pd.pivot_table(df, 
+                index='省份', 
+                columns='性别',
+                values='用户ID',
+                aggfunc='count')
+
+# 横向合计
+dfpivot['sum'] = dfpivot.sum(axis=1)
+
+# 纵向合计
+dfpivot.loc['sum'] = dfpivot.sum(axis=0)
 
 # pandas.pivot_table
     # (data, values=None, index=None, columns=None, 
@@ -264,12 +258,11 @@ sr = df[col].dt.date
     # is_year_start	Logical indicating if first day of year (defined by frequency)
     # is_year_end	Logical indicating if last day of year (defined by frequency)
 
-
 # 2.将索引按照指定格式显示
 
 # 确保标签索引是日期型
-# df.set_index(col,inplace=True)
-df.index = df[col]
+df.set_index(col,inplace=True)
+# df.index = df[col] #赋值也可以
 
 # A或Y年，Q季度，M月，D日，H时，T分，S秒
 df2 = df.to_period('D')
@@ -317,43 +310,43 @@ df2 = df['2011-07-01':'2011-08']
 df2 = df[:'2011-02-1']     #2.1号之前(包含)的数据
 df2 = df['2011-09-1':]     #9.1号之后(包含)
 
-
-# 关于日期描述字符. 下面中的简写C-custom, B-business,
-# B business day
-# C custom business day
-######### 年份
-# A year end
-# BA business year end
-# AS year start
-# BAS business year start
-######### 季节
-# Q quarter end
-# BQ business quarter end
-# QS quarter start
-# BQS business quarter start
-######### 月份
-# M month end
-# BM business month end 
-# CBM custom business month end
-# MS month start
-######### 半月份
-# SMS semi-month start
-# SM semi-month end(15th and end of month)
-# BMS custom business start
-# CBMS custom business month start
-######### 周
-# W weekly
-######### 日
-# D calendar day
-######### 小时
-# BH business hour
-# H hourly 
-######### 分钟
-# T,min minutely
-######### 秒
-# S secondly
-######### 毫秒
-# L,ms microseconds
-######### 微秒
-# N  nanoseconds
+# 关于日期描述字符. 
+    # 下面中的简写C-custom, B-business,
+    # B business day
+    # C custom business day
+    ######### 年份
+    # A year end
+    # BA business year end
+    # AS year start
+    # BAS business year start
+    ######### 季节
+    # Q quarter end
+    # BQ business quarter end
+    # QS quarter start
+    # BQS business quarter start
+    ######### 月份
+    # M month end
+    # BM business month end 
+    # CBM custom business month end
+    # MS month start
+    ######### 半月份
+    # SMS semi-month start
+    # SM semi-month end(15th and end of month)
+    # BMS custom business start
+    # CBMS custom business month start
+    ######### 周
+    # W weekly
+    ######### 日
+    # D calendar day
+    ######### 小时
+    # BH business hour
+    # H hourly 
+    ######### 分钟
+    # T,min minutely
+    ######### 秒
+    # S secondly
+    ######### 毫秒
+    # L,ms microseconds
+    ######### 微秒
+    # N  nanoseconds
 
