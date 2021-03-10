@@ -12,6 +12,7 @@
 # 9.桑基图（Sankey）
 ######################################################################
 
+from matplotlib.pyplot import yticks
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -301,6 +302,10 @@ def plotBar2(df, index, columns,
                 plt.yticks([])  # 隐藏坐标轴刻度值
             btm += df2[col]
 
+        if percentage:
+            yticks = np.arange(0, 1.3, 0.2)
+            plt.yticks(yticks)
+
     else:   #复式柱状图
         n, m = df2.shape
         width = 0.8/m
@@ -327,7 +332,7 @@ def plotBar2(df, index, columns,
     plt.xlabel(index)
     plt.ylabel(values)
     plt.title(title)
-    plt.legend()
+    plt.legend(loc='best')
     plt.show()
 
 
